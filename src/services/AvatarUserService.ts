@@ -3,6 +3,7 @@ import fs from 'fs';
 import path from 'path';
 import User from '../entities/User';
 import multerConfig from '../configs/multer';
+import AppError from '../errors/AppError';
 
 interface Request {
   userId: string;
@@ -14,7 +15,7 @@ class AvatarUserService {
     const userRepository = getRepository(User);
     const user = await userRepository.findOne(userId);
     if (!user) {
-      throw new Error('Unknown user');
+      throw new AppError('Unknown user', 401);
     }
     if (user.avatar) {
       const filenamePath = path.join(multerConfig.directoryUpload, user.avatar);

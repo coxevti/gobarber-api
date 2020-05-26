@@ -17,7 +17,7 @@ usersRouter.post('/', async (req, res) => {
     delete user.password;
     return res.status(201).json(user);
   } catch (error) {
-    return res.status(400).json({ error: error.message });
+    return res.status(error.statusCode).json({ error: error.message });
   }
 });
 
@@ -35,7 +35,7 @@ usersRouter.patch(
       delete user.password;
       return res.json(user);
     } catch (error) {
-      return res.status(400).json({ error: error.message });
+      return res.status(error.statusCode).json({ error: error.message });
     }
   },
 );

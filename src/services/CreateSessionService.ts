@@ -3,6 +3,7 @@ import { compare } from 'bcryptjs';
 import { sign } from 'jsonwebtoken';
 import User from '../entities/User';
 import authConfig from '../configs/auth';
+import AppError from '../errors/AppError';
 
 interface Request {
   email: string;
@@ -21,11 +22,17 @@ class CreateSessionService {
       where: { email },
     });
     if (!user) {
-      throw new Error('The email or password you entered is incorrect.');
+      throw new AppError(
+        'The email or password you entered is incorrect.',
+        401,
+      );
     }
     const checkPassword = await compare(password, user.password);
     if (!checkPassword) {
-      throw new Error('The email or password you entered is incorrect.');
+      throw new AppError(
+        'The email or password you entered is incorrect.',
+        401,
+      );
     }
     const { secret, expiresIn } = authConfig.jwt;
     const token = sign({}, secret, { subject: user.id, expiresIn });
