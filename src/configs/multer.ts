@@ -3,12 +3,20 @@ import crypto from 'crypto';
 import multer, { FileFilterCallback } from 'multer';
 import { Request } from 'express';
 
+const directoryUpload = path.resolve(__dirname, '..', '..', 'tmp');
+
 export default {
+  directoryUpload,
   storage: multer.diskStorage({
-    destination: path.resolve(__dirname, '..', '..', 'tmp'),
+    destination: directoryUpload,
     filename: (req, file, cb) => {
       const hash = crypto.randomBytes(10).toString('hex');
-      const filename = `${hash}-${file.originalname}`;
+      const slugOriginalFile = file.originalname
+        .toLocaleLowerCase()
+        .replace(' ', ' ')
+        .split(' ')
+        .join('-');
+      const filename = `${hash}-${slugOriginalFile}`;
       return cb(null, filename);
     },
   }),
